@@ -12,8 +12,33 @@ import sys
         
 def cell_decision(matrix_dict, row, col, match, mismatch, gap_open, gap_extend, s1, s2):
     '''
-    to do...
+    given a cell in the matrix chooses the optimal path
+    and set the value for that cell
     '''
+    if s1[row-1] == s2[col-1]:
+        diagonal = matrix_dict[row-1,col-1] + match
+    else:
+        diagonal = matrix_dict[row-1,col-1] + mismatch
+        
+    # adding a gap in s1, looking left
+    left_score = -10e10
+    for temp_col in xrange(col):
+        gap_length = col - temp_col
+        gap_cost = gap_open + gap_extend * (gap_length -1)
+        temp_score = matrix_dict[row,temp_col] + gap_cost
+        if temp_score > left_score:
+            left_score = temp_score
+            
+    # adding a gap in s2, looking up
+    up_score = -10e10
+    for temp_row in xrange(row):
+        gap_length = row - temp_row
+        gap_cost = gap_open + gap_extend * (gap_length -1)
+        temp_score = matrix_dict[temp_row,col] + gap_cost
+        if temp_score > up_score:
+            up_score = temp_score
+
+    matrix_dict[row,col] = max(diagonal, left_score, up_score)
     
 def align(s1, s2):
     match = 3
